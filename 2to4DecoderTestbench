@@ -1,0 +1,23 @@
+module Lab1DecoderTestbench;  
+wire Y3, Y2, Y1, Y0; reg A, B; reg en; 
+// Instantiate the Decoder (named DUT {device under test}) 
+decoder_2to4 DUT(Y3, Y2, Y1, Y0, A, B, en); 
+initial begin 
+$timeformat (-9, 1, " ns", 6); #1; 
+   A = 1'b0; // time = 0 
+B = 1'b0; 
+en = 1'b0; 
+#9; 
+en = 1'b1; // time = 10 
+#10; 
+A = 1'b0; 
+B = 1'b1; // time = 20 
+#10; 
+A = 1'b1; 
+B = 1'b0; // time = 30 
+#10; 
+A = 1'b1; 
+B = 1'b1; // time = 40 
+#5; en = 1'b0; // time = 45
+ #5; end 
+ endmodule 
