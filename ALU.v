@@ -42,7 +42,8 @@ module mux(opcode, ADD, XOR, NOR, OR, AND, SL, SR, result);
 			3'b100: result <= NOR;
 			3'b101: result <= SL;
 			3'b110: result <= SR;
-			//3'b111: result <= SUB;
+			3'b111: result <= 32'b0;
+			default: result <= 32'b0;
 			endcase
 		end
 endmodule
