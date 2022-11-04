@@ -57,8 +57,8 @@ module FullAdder(A, B, Cin, Cout, sum);
 	generate
 	for(i=0;i<32;i=i+1) begin:GenerateFullAdder
 		if (i==0) begin
-			assign carry[i] = A[i]&B[i];
-			assign sum[i] = A[i]^B[i];
+			assign carry[i] = Cin;
+			assign sum[i] = (A[i]^B[i]) ^ Cin;
 		end
 		else begin
 			assign carry[i] = (A[i]&B[i]) | (carry[i-1]&B[i]) | (carry[i-1]&A[i]);
