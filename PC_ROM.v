@@ -1,10 +1,11 @@
-module PC_ROM(next, current, rst, clk, rd, rs1, rs2, imm, out);
+module PC_ROM(next, current, rst, clk, rd, rs1, rs2, imm, out, instr_out);
 //Define IO
 input rst, clk;
 output [7:0] current, next;
 output [4:0] rd, rs1, rs2;
 output [11:0] imm;
 output [31:0] out;
+output [31:0] instr_out;
 
 wire[7:0] PC; //current addr
 wire[7:0] PC4; //looks @ next addr
@@ -12,7 +13,7 @@ wire[7:0] PC4; //looks @ next addr
 PC pctest (PC4, PC, rst, clk);
 Incr_by_4 addtest (PC, PC4); //looks @ next addr
 ROM romtest (PC, out);
-instr_decoder decodetest (out, rd, rs1, rs2, imm);
+instr_decoder decodetest (out, rd, rs1, rs2, imm, instr_out);
 
 assign current = PC;
 assign next = PC4;
@@ -27,7 +28,7 @@ always @(posedge clk) begin
 	if (rst)
 	out = 8'b00000000;
 	else 
-	out = in; // can make a +4 counter module instead (out = in)
+	out = in; // incremented by 4 b/c of incr_by_4 module
 end
 endmodule 
 
@@ -66,12 +67,14 @@ output reg [31:0] instr;
 	end
 endmodule
 
-module instr_decoder(instruction, rd, rs1, rs2, imm);
+module instr_decoder(instruction, rd, rs1, rs2, imm, instr_out);
 input [31:0] instruction;
 output [4:0] rd, rs1, rs2;
 output [11:0] imm;
+output [31:0] instr_out;
 assign rd = instruction[11:7];
 assign rs1 = instruction[19:15];
 assign rs2 = instruction[24:20];
 assign imm = instruction[31:20];
+assign instr_out = instruction;
 endmodule 
