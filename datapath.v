@@ -61,9 +61,9 @@ mux_2x1 alurammux_test (wb, alurammux_inA, alu_out, alurammux_out);
 mux_2x1 pcmux_test (pcsrc, pc_addA_out, pc_addB_out, pcmux_out);
 
 
-//assign status to be z, n, Cout, o, p combined in some way
+//assign status to be p, o, Cout, n, z combined in some way
 
-assign status = {alu_status[0], alu_status[1], alu_status[2], carry, p};
+assign status = {p, alu_status[0], alu_status[1], alu_status[2], carry};
 
 endmodule
 
