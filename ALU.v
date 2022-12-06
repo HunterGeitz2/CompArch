@@ -1,10 +1,12 @@
-module ALU(A, B, Cin, Cout, sub, opcode, result, z, n, o);
+module ALU(A, B, Cin, Cout, sub, opcode, result, status);
 	input [31:0] A, B;
 	input [2:0] opcode;
 	input Cin;
 	input sub;
 	output[31:0] result;
-	output Cout, z, n, o;
+	output Cout;
+	output[2:0] status;
+	wire z, n, o;
 
 	wire [31:0] ADD, XOR, AND, OR, NOR, SL, SR;
 	wire [31:0] W; //2’s complement → B input will handle subtraction
@@ -23,6 +25,8 @@ module ALU(A, B, Cin, Cout, sub, opcode, result, z, n, o);
 	assign n = (result[31]);
 	//Overflow
 	assign o = (A[31] & B[31] & ~result[31])  | (~A[31] & ~B[31] & result[31]);
+	
+	assign status = {o, Cout, n, z};
 	
 endmodule
 	
