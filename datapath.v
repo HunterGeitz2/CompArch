@@ -12,8 +12,10 @@ wire [31:0] instr_wire;
 wire [31:0] pc_in, pc_out, rom_out, ram_out, alu_out;
 wire [31:0] pc_addA_out, pc_addB_out;
 wire [31:0] pcmux_out;
+wire [3:0] alu_status;
 
-wire [1:0] z, n, o, carry, p; //(Carry = ALU's Cout)
+wire p;
+
 
 assign p = (instr[31]^instr[30]^instr[29]^instr[28]^instr[27]^instr[26]^instr[25]^instr[24]
 ^instr[23]^instr[22]^instr[21]^instr[20]^instr[19]^instr[18]^instr[17]^instr[16]^instr[15]
@@ -23,12 +25,14 @@ assign p = (instr[31]^instr[30]^instr[29]^instr[28]^instr[27]^instr[26]^instr[25
 assign pc_in = pcmux_out;
 assign rom_in = pc_out;
 
-wire [31:0] rf_out1, rf_out2, immgen_out, alumux_out, alurammux_out, alurammux_inA;
+wire [31:0] rf_out1, rf_out2, immgen_out, alumux_out, alurammux_out;
 
 wire en;
 assign en = 1'b1;
 
-wire [2:0] alu_status;
+assign instr = instr_wire;
+
+
 
 	//module PC(in, out, rst, clk);
 PC pctest (pc_in, pc_out, rst, clk);
@@ -37,19 +41,19 @@ PC pctest (pc_in, pc_out, rst, clk);
 ROM romtest (rom_in, rom_out);
 
 	//module instr_decoder(instruction, rd, rs1, rs2, imm, instr_out);
-instr_decoder decodetest (rom_out, rd, rs1, rs2, imm_out, instr);
+instr_decoder decodetest (rom_out, rd, rs1, rs2, imm_out, instr_wire);
 
 	//module RegFile32_32(  en, clk, rst, Data_in,       RW,    rs1, rs2, rd, Bus_A,   Bus_B);
 RegFile32_32 regfile_test (en, clk, rst, alurammux_out, regrw, rs1, rs2, rd, rf_out1, rf_out2);
 
-	//module ALU(A,     B,          Cin,  Cout,  sub, opcode, result, status);
-ALU alu_test (rf_out1, alumux_out, 1'h0, carry, alumux_out[31], aluop, alu_out, alu_status);
+	//module ALU(A,     B,          Cin,  sub,            opcode, result, status);
+ALU alu_test (rf_out1, alumux_out, 1'h0, alumux_out[31], aluop, alu_out, alu_status);
 
 	//module RAM_256x32 (Addr, DataIn, RW, CLK, DataOut);
-RAM_256x32 ram_test (alu_out[7:0], rf_out2, memrw, clk, alurammux_inA);
+RAM_256x32 ram_test (alu_out[7:0], rf_out2, memrw, clk, ram_out);
 
 	//module imm_gen(imm_in, imm_out,    instr_type);
-imm_gen immgen_test (instr, immgen_out, immgen_ctrl);
+imm_gen immgen_test (instr_wire, immgen_out, immgen_ctrl);
 
 	//module Adder(A,     B,     out);
 Adder addA_test (pc_out, 32'h4, pc_addA_out);
@@ -57,13 +61,12 @@ Adder addB_test (pc_out, immgen_out, pc_addB_out);
 
 	//module mux_2x1( sel,    in0,     in1,        result);
 mux_2x1 alumux_test (alusrc, rf_out2, immgen_out, alumux_out);
-mux_2x1 alurammux_test (wb, alurammux_inA, alu_out, alurammux_out);
+mux_2x1 alurammux_test (wb, ram_out, alu_out, alurammux_out);
 mux_2x1 pcmux_test (pcsrc, pc_addA_out, pc_addB_out, pcmux_out);
 
 
 //assign status to be p, o, Cout, n, z combined in some way
-
-assign status = {p, alu_status[0], alu_status[1], alu_status[2], carry};
+assign status = {p, alu_status[3], alu_status[2], alu_status[1], alu_status[0]};
 
 endmodule
 
