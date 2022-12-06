@@ -3,10 +3,11 @@ module ALU_tb();
 reg[2:0] opcode;
 reg[31:0] A,B;
 reg Cin, sub;
-wire z, n, o, Cout;
+wire Cout;
+wire [2:0] status;
 wire[31:0] result;
 
-ALU dut (A, B, Cin, Cout, sub, opcode, result, z, n, o);
+ALU dut (A, B, Cin, Cout, sub, opcode, result, status);
 
 
 initial begin
