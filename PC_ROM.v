@@ -43,26 +43,16 @@ input[7:0] Addr;
 output reg [31:0] instr;
 	always @ (Addr) begin
 		case (Addr)
-		8'h0:  instr = 32'h00000000;
-		8'h4:  instr = 32'h00450693;
-		8'h8:  instr = 32'h00100713;
-		8'hc:  instr = 32'h00b76463;
-		8'h10: instr = 32'h0006a803;
-		8'h14: instr = 32'h00008067;
-		8'h18: instr = 32'h00068613;
-		8'h1c: instr = 32'h00070793;
-		8'h20: instr = 32'hffc62883;
-		8'h24: instr = 32'h01185a63;
-		8'h28: instr = 32'h01162023;
-		8'h2c: instr = 32'hfff78793;
-		8'h30: instr = 32'hffc60613;
-		8'h34: instr = 32'hfe0796e3;
-		8'h38: instr = 32'h00279793;
-		8'h3c: instr = 32'h00f50763;
-		8'h40: instr = 32'h0107a023;
-		8'h44: instr = 32'h00170713;
-		8'h48: instr = 32'h00468693;
-		8'h4c: instr = 32'hfc1ff06f;
+		8'h00: instr = 32'h00000000;
+		8'h04: instr = 32'h00f00193; //addi x3, x0, 15
+		8'h08: instr = 32'h00700213; //addi x4, x0, 7
+		8'h0c: instr = 32'h004182b3; //add  x5, x3, x4
+		8'h10: instr = 32'h06502223; //sw   x5, 100(x0)
+		8'h14: instr = 32'h05d22183; //lw   x3, 93(x4)
+		8'h18: instr = 32'h00518863; //beq  x3, x5, 8
+		8'h20: instr = 32'h00200113; //addi x2, x0, 2
+		8'h24: instr = 32'h00221233; //sll  x4, x4, x2
+		8'h28: instr = 32'h00125213; //slri x4, x4, 1
 		endcase
 	end
 endmodule
